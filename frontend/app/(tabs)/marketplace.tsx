@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -13,10 +13,25 @@ export default function MarketplaceScreen() {
   const { user, refreshUser } = useAuth();
   const [paidRecipes, setPaidRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searching, setSearching] = useState(false);
 
   useEffect(() => {
     loadPaidRecipes();
   }, []);
+
+  useEffect(() => {
+    // Debounced search
+    const timer = setTimeout(() => {
+      if (searchQuery.trim()) {
+        handleSearch(searchQuery);
+      } else {
+        loadPaidRecipes();
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   const loadPaidRecipes = async () => {
     try {
@@ -27,6 +42,24 @@ export default function MarketplaceScreen() {
       console.error('Failed to load marketplace:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSearch = async (query: string) => {
+    if (!query.trim()) {
+      loadPaidRecipes();
+      return;
+    }
+
+    setSearching(true);
+    try {
+      const response = await api.get(`/recipes?skip=0&limit=50&search=${encodeURIComponent(query)}`);
+      const paid = response.data.filter((r: any) => r.is_paid);
+      setPaidRecipes(paid);
+    } catch (error) {
+      console.error('Search failed:', error);
+    } finally {
+      setSearching(false);
     }
   };
 
@@ -47,6 +80,24 @@ export default function MarketplaceScreen() {
         <View style={styles.header}>
           <Text style={styles.title}>Marketplace</Text>
           <Text style={styles.subtitle}>Premium recipes from top chefs</Text>
+        </View>
+
+        <View style={styles.searchContainer}>
+          <MaterialCommunityIcons name="magnify" size={20} color={theme.colors.textMuted} style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search by title, ingredient, or chef..."
+            placeholderTextColor={theme.colors.textMuted}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+          {searchQuery.length > 0 && (
+            <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearButton}>
+              <MaterialCommunityIcons name="close-circle" size={20} color={theme.colors.textMuted} />
+            </TouchableOpacity>
+          )}
         </View>
 
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
@@ -105,6 +156,10 @@ const styles = StyleSheet.create({
   header: { paddingHorizontal: theme.spacing.lg, paddingTop: theme.spacing.lg, paddingBottom: theme.spacing.md },
   title: { fontSize: theme.fontSize.xxxl, fontWeight: '700', color: theme.colors.text },
   subtitle: { fontSize: theme.fontSize.md, color: theme.colors.textSecondary, marginTop: theme.spacing.xs },
+  searchContainer: { flexDirection: 'row', alignItems: 'center', marginHorizontal: theme.spacing.lg, marginBottom: theme.spacing.md, backgroundColor: theme.colors.glassLight, borderRadius: theme.borderRadius.md, paddingHorizontal: theme.spacing.md, borderWidth: 1, borderColor: 'rgba(255, 255, 255, 0.1)' },
+  searchIcon: { marginRight: theme.spacing.sm },
+  searchInput: { flex: 1, paddingVertical: theme.spacing.md, color: theme.colors.text, fontSize: theme.fontSize.md },
+  clearButton: { padding: theme.spacing.xs },
   scrollView: { flex: 1 },
   scrollContent: { padding: theme.spacing.lg },
   loadingText: { color: theme.colors.textSecondary, textAlign: 'center', marginTop: theme.spacing.xl },

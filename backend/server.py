@@ -491,6 +491,7 @@ async def get_recipes(
     limit: int = 20,
     category: Optional[str] = None,
     creator_id: Optional[str] = None,
+    search: Optional[str] = None,
     current_user: dict = Depends(get_current_user)
 ):
     query = {}
@@ -498,6 +499,16 @@ async def get_recipes(
         query["category"] = category
     if creator_id:
         query["creator_id"] = creator_id
+    
+    # Search functionality
+    if search:
+        search_lower = search.lower()
+        # MongoDB text search or regex
+        query["$or"] = [
+            {"title": {"$regex": search_lower, "$options": "i"}},
+            {"creator_name": {"$regex": search_lower, "$options": "i"}},
+            {"ingredients": {"$elemMatch": {"$regex": search_lower, "$options": "i"}}},
+        ]
     
     recipes = await db.recipes.find(query).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
     
