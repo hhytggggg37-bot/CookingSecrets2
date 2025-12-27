@@ -187,6 +187,25 @@ class TransactionResponse(BaseModel):
     recipe_id: Optional[str] = None
     created_at: datetime
 
+# Pantry Models
+class PantryItemCreate(BaseModel):
+    name: Optional[str] = None
+    image: Optional[str] = None  # base64
+    quantity_type: str  # "kg", "number", "none"
+    quantity: float = 0
+
+class PantryItemUpdate(BaseModel):
+    quantity: float
+
+class PantryItemResponse(BaseModel):
+    id: str
+    user_id: str
+    name: Optional[str]
+    image: Optional[str]
+    quantity_type: str
+    quantity: float
+    created_at: datetime
+
 # Report Models
 class ReportCreate(BaseModel):
     comment_id: str
@@ -956,6 +975,105 @@ async def get_escalated_reports(current_user: dict = Depends(get_current_admin))
     return [ReportResponse(id=str(r["_id"]), **{k: v for k, v in r.items() if k != "_id"}) for r in reports]
 
 # ============================================================================
+# PANTRY ENDPOINTS
+# ============================================================================
+
+@api_router.post("/pantry", response_model=PantryItemResponse)
+async def create_pantry_item(item_data: PantryItemCreate, current_user: dict = Depends(get_current_user)):
+    # Validation: at least name OR image required
+    if not item_data.name and not item_data.image:
+        raise HTTPException(status_code=400, detail="Either name or image is required")
+    
+    # Validation: quantity_type must be valid
+    if item_data.quantity_type not in ["kg", "number", "none"]:
+        raise HTTPException(status_code=400, detail="Invalid quantity_type. Must be: kg, number, or none")
+    
+    # Validation: quantity must be non-negative
+    if item_data.quantity < 0:
+        raise HTTPException(status_code=400, detail="Quantity cannot be negative")
+    
+    # Validation: number type must be integer
+    if item_data.quantity_type == "number" and item_data.quantity != int(item_data.quantity):
+        raise HTTPException(status_code=400, detail="Quantity for 'number' type must be an integer")
+    
+    item = {
+        "user_id": str(current_user["_id"]),
+        "name": item_data.name,
+        "image": item_data.image,
+        "quantity_type": item_data.quantity_type,
+        "quantity": item_data.quantity if item_data.quantity_type != "none" else 0,
+        "created_at": datetime.utcnow()
+    }
+    
+    result = await db.pantry.insert_one(item)
+    item["_id"] = result.inserted_id
+    
+    return PantryItemResponse(
+        id=str(item["_id"]),
+        **{k: v for k, v in item.items() if k != "_id"}
+    )
+
+@api_router.get("/pantry", response_model=List[PantryItemResponse])
+async def get_pantry_items(current_user: dict = Depends(get_current_user)):
+    # Get user's pantry items sorted by creation date
+    items = await db.pantry.find({"user_id": str(current_user["_id"])}).sort("created_at", -1).to_list(100)
+    return [PantryItemResponse(id=str(item["_id"]), **{k: v for k, v in item.items() if k != "_id"}) for item in items]
+
+@api_router.put("/pantry/{item_id}", response_model=PantryItemResponse)
+async def update_pantry_item(item_id: str, update_data: PantryItemUpdate, current_user: dict = Depends(get_current_user)):
+    if not ObjectId.is_valid(item_id):
+        raise HTTPException(status_code=400, detail="Invalid item ID")
+    
+    item = await db.pantry.find_one({"_id": ObjectId(item_id)})
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    # Ownership check
+    if str(item["user_id"]) != str(current_user["_id"]):
+        raise HTTPException(status_code=403, detail="Not authorized to update this item")
+    
+    # Validation: quantity must be non-negative
+    if update_data.quantity < 0:
+        raise HTTPException(status_code=400, detail="Quantity cannot be negative")
+    
+    # Validation: number type must be integer
+    if item["quantity_type"] == "number" and update_data.quantity != int(update_data.quantity):
+        raise HTTPException(status_code=400, detail="Quantity for 'number' type must be an integer")
+    
+    # For "none" type, quantity should remain 0
+    if item["quantity_type"] == "none":
+        raise HTTPException(status_code=400, detail="Cannot update quantity for checklist items")
+    
+    await db.pantry.update_one(
+        {"_id": ObjectId(item_id)},
+        {"$set": {"quantity": update_data.quantity}}
+    )
+    
+    item["quantity"] = update_data.quantity
+    
+    return PantryItemResponse(
+        id=str(item["_id"]),
+        **{k: v for k, v in item.items() if k != "_id"}
+    )
+
+@api_router.delete("/pantry/{item_id}")
+async def delete_pantry_item(item_id: str, current_user: dict = Depends(get_current_user)):
+    if not ObjectId.is_valid(item_id):
+        raise HTTPException(status_code=400, detail="Invalid item ID")
+    
+    item = await db.pantry.find_one({"_id": ObjectId(item_id)})
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    # Ownership check
+    if str(item["user_id"]) != str(current_user["_id"]):
+        raise HTTPException(status_code=403, detail="Not authorized to delete this item")
+    
+    await db.pantry.delete_one({"_id": ObjectId(item_id)})
+    
+    return {"success": True, "message": "Item deleted"}
+
+# ============================================================================
 # DASHBOARD & STATS ENDPOINTS
 # ============================================================================
 
@@ -974,6 +1092,47 @@ async def get_top_chefs(current_user: dict = Depends(get_current_user)):
     # Get chefs with highest earnings
     chefs = await db.users.find({"role": UserRole.CHEF}).sort("wallet_balance", -1).limit(10).to_list(10)
     return [user_to_response(chef) for chef in chefs]
+
+@api_router.get("/dashboard/most-liked")
+async def get_most_liked_recipes(current_user: dict = Depends(get_current_user)):
+    # Get top 3 recipes by like count for social proof
+    recipes = await db.recipes.find({}).sort("likes_count", -1).limit(3).to_list(3)
+    
+    # Get user's likes
+    likes = await db.likes.find({"user_id": str(current_user["_id"])}).to_list(1000)
+    liked_recipe_ids = {like["recipe_id"] for like in likes}
+    
+    result = []
+    for recipe in recipes:
+        recipe_id = str(recipe["_id"])
+        result.append(RecipeResponse(
+            id=recipe_id,
+            **{k: v for k, v in recipe.items() if k != "_id"},
+            is_liked=recipe_id in liked_recipe_ids,
+            is_saved=False
+        ))
+    
+    return result
+
+@api_router.get("/users/top-creator")
+async def get_top_creator(current_user: dict = Depends(get_current_user)):
+    # Get creator with highest earnings (most successful monetization)
+    # This drives marketplace discovery
+    top_creator = await db.users.find_one(
+        {"role": {"$in": [UserRole.CHEF, UserRole.USER]}},
+        sort=[("wallet_balance", -1)]
+    )
+    
+    if not top_creator:
+        return None
+    
+    return {
+        "id": str(top_creator["_id"]),
+        "name": top_creator["name"],
+        "role": top_creator["role"],
+        "wallet_balance": top_creator.get("wallet_balance", 0.0),
+        "metric": "Most Earned"
+    }
 
 # ============================================================================
 # HEALTH CHECK

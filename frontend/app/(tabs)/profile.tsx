@@ -87,7 +87,12 @@ export default function ProfileScreen() {
             </TouchableOpacity>
 
             {user?.role === 'chef' && (
-              <TouchableOpacity style={styles.menuItem}>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => router.push('/(tabs)/cookbook')}
+                // Chefs can view their creations in cookbook
+                // Future: can add filter for "created by me" vs "saved"
+              >
                 <MaterialCommunityIcons name="chef-hat" size={24} color={theme.colors.textSecondary} />
                 <Text style={styles.menuText}>My Recipes</Text>
                 <MaterialCommunityIcons name="chevron-right" size={24} color={theme.colors.textMuted} />

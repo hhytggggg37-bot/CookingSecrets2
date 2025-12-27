@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal, Alert, ActivityIndicator, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -24,6 +24,8 @@ export default function HomeScreen() {
   const [generatedRecipe, setGeneratedRecipe] = useState<Recipe | null>(null);
   const [trendingRecipes, setTrendingRecipes] = useState([]);
   const [topChefs, setTopChefs] = useState([]);
+  const [mostLikedRecipes, setMostLikedRecipes] = useState([]);
+  const [topCreator, setTopCreator] = useState<any>(null);
   const [guestSessionId, setGuestSessionId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -44,12 +46,16 @@ export default function HomeScreen() {
 
   const loadDashboardData = async () => {
     try {
-      const [trending, chefs] = await Promise.all([
+      const [trending, chefs, mostLiked, creator] = await Promise.all([
         api.get('/dashboard/trending'),
         api.get('/dashboard/top-chefs'),
+        api.get('/dashboard/most-liked'),
+        api.get('/users/top-creator'),
       ]);
       setTrendingRecipes(trending.data);
       setTopChefs(chefs.data);
+      setMostLikedRecipes(mostLiked.data);
+      setTopCreator(creator.data);
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
     }
@@ -162,6 +168,64 @@ export default function HomeScreen() {
               <Text style={styles.aiSubtitle}>Create recipes from your ingredients</Text>
             </LinearGradient>
           </TouchableOpacity>
+
+          {/* Most Liked Recipes - Social proof to drive discovery */}
+          {mostLikedRecipes.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Most Liked Recipes</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {mostLikedRecipes.map((recipe: any, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.likedRecipeCard}
+                    onPress={() => router.push(`/recipe/${recipe.id}`)}
+                  >
+                    {recipe.image && (
+                      <Image source={{ uri: recipe.image }} style={styles.likedRecipeImage} />
+                    )}
+                    <View style={styles.likedRecipeContent}>
+                      <Text style={styles.likedRecipeTitle} numberOfLines={2}>{recipe.title}</Text>
+                      <View style={styles.likedRecipeStats}>
+                        <MaterialCommunityIcons name="heart" size={16} color={theme.colors.error} />
+                        <Text style={styles.likedRecipeStatText}>{recipe.likes_count} likes</Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+          )}
+
+          {/* Top Creator - Drives marketplace monetization */}
+          {topCreator && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Featured Creator</Text>
+              <TouchableOpacity
+                style={styles.creatorCard}
+                onPress={() => router.push(`/marketplace?creator=${topCreator.id}`)}
+                // Redirects to marketplace filtered by this creator
+                // This encourages discovery and monetization of creator's paid recipes
+                // Future: can add dedicated creator profile page
+              >
+                <View style={styles.creatorAvatar}>
+                  <MaterialCommunityIcons
+                    name={topCreator.role === 'chef' ? 'chef-hat' : 'account-star'}
+                    size={32}
+                    color={theme.colors.primary}
+                  />
+                </View>
+                <View style={styles.creatorInfo}>
+                  <Text style={styles.creatorName}>{topCreator.name}</Text>
+                  <View style={styles.creatorBadge}>
+                    <Text style={styles.creatorBadgeText}>{topCreator.role.toUpperCase()}</Text>
+                  </View>
+                  <Text style={styles.creatorMetric}>{topCreator.metric}</Text>
+                  <Text style={styles.creatorValue}>${topCreator.wallet_balance.toFixed(2)}</Text>
+                </View>
+                <MaterialCommunityIcons name="chevron-right" size={24} color={theme.colors.textMuted} />
+              </TouchableOpacity>
+            </View>
+          )}
 
           {trendingRecipes.length > 0 && (
             <View style={styles.section}>
@@ -297,6 +361,20 @@ const styles = StyleSheet.create({
   chefInfo: { flex: 1 },
   chefName: { fontSize: theme.fontSize.md, fontWeight: '600', color: theme.colors.text },
   chefEarnings: { fontSize: theme.fontSize.sm, color: theme.colors.textSecondary },
+  likedRecipeCard: { width: 180, marginRight: theme.spacing.md, backgroundColor: theme.colors.glassLight, borderRadius: theme.borderRadius.md, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255, 255, 255, 0.1)' },
+  likedRecipeImage: { width: '100%', height: 100, backgroundColor: theme.colors.surfaceLight },
+  likedRecipeContent: { padding: theme.spacing.sm },
+  likedRecipeTitle: { fontSize: theme.fontSize.sm, fontWeight: '600', color: theme.colors.text, marginBottom: theme.spacing.xs },
+  likedRecipeStats: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing.xs },
+  likedRecipeStatText: { fontSize: theme.fontSize.xs, color: theme.colors.textSecondary },
+  creatorCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: theme.colors.glassLight, borderRadius: theme.borderRadius.lg, padding: theme.spacing.md, borderWidth: 1, borderColor: theme.colors.primary },
+  creatorAvatar: { width: 64, height: 64, borderRadius: 32, backgroundColor: theme.colors.glassDark, justifyContent: 'center', alignItems: 'center', marginRight: theme.spacing.md },
+  creatorInfo: { flex: 1 },
+  creatorName: { fontSize: theme.fontSize.lg, fontWeight: '700', color: theme.colors.text, marginBottom: theme.spacing.xs },
+  creatorBadge: { backgroundColor: theme.colors.primary, paddingHorizontal: theme.spacing.sm, paddingVertical: 2, borderRadius: theme.borderRadius.sm, alignSelf: 'flex-start', marginBottom: theme.spacing.xs },
+  creatorBadgeText: { fontSize: theme.fontSize.xs, fontWeight: '700', color: theme.colors.text },
+  creatorMetric: { fontSize: theme.fontSize.xs, color: theme.colors.textMuted, marginTop: theme.spacing.xs },
+  creatorValue: { fontSize: theme.fontSize.md, fontWeight: '600', color: theme.colors.primary },
   modalContainer: { flex: 1, backgroundColor: theme.colors.overlay, justifyContent: 'flex-end' },
   modalContent: { backgroundColor: theme.colors.backgroundLight, borderTopLeftRadius: theme.borderRadius.xl, borderTopRightRadius: theme.borderRadius.xl, padding: theme.spacing.xl, maxHeight: '90%' },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: theme.spacing.lg },
