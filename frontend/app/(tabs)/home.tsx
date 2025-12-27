@@ -3,9 +3,11 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal,
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../contexts/AuthContext';
 import { theme } from '../../utils/theme';
 import api from '../../utils/api';
+import { useRouter } from 'expo-router';
 
 interface Recipe {
   title: string;
@@ -14,6 +16,7 @@ interface Recipe {
 }
 
 export default function HomeScreen() {
+  const router = useRouter();
   const { user } = useAuth();
   const [showGenerator, setShowGenerator] = useState(false);
   const [ingredients, setIngredients] = useState('');
@@ -21,10 +24,23 @@ export default function HomeScreen() {
   const [generatedRecipe, setGeneratedRecipe] = useState<Recipe | null>(null);
   const [trendingRecipes, setTrendingRecipes] = useState([]);
   const [topChefs, setTopChefs] = useState([]);
+  const [guestSessionId, setGuestSessionId] = useState<string | null>(null);
 
   useEffect(() => {
     loadDashboardData();
+    initGuestSession();
   }, []);
+
+  const initGuestSession = async () => {
+    if (!user) {
+      let sessionId = await AsyncStorage.getItem('guest_session_id');
+      if (!sessionId) {
+        sessionId = 'guest-' + Date.now() + '-' + Math.random().toString(36).substring(7);
+        await AsyncStorage.setItem('guest_session_id', sessionId);
+      }
+      setGuestSessionId(sessionId);
+    }
+  };
 
   const loadDashboardData = async () => {
     try {
@@ -50,18 +66,39 @@ export default function HomeScreen() {
       const ingredientList = ingredients.split(',').map(i => i.trim()).filter(Boolean);
       const response = await api.post('/recipes/generate', {
         ingredients: ingredientList,
-        session_id: user?.id || 'guest-' + Date.now(),
+        session_id: guestSessionId,
       });
 
       setGeneratedRecipe(response.data.recipe);
       if (response.data.requires_login) {
         Alert.alert(
           'Guest Limit Reached',
-          'You have used your one free recipe. Please sign up to generate unlimited recipes!'
+          'You have used your one free recipe. Please sign up to generate unlimited recipes!',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'Sign Up', onPress: () => router.push('/(auth)/signup') }
+          ]
         );
       }
     } catch (error: any) {
-      Alert.alert('Generation Failed', error.response?.data?.detail || error.message);
+      const errorMessage = error.response?.data?.detail || error.message;
+      if (errorMessage.includes('AI service not configured')) {
+        Alert.alert(
+          'AI Service Not Configured',
+          'The AI recipe generation service is not yet configured. Please ask the administrator to add the OpenAI API key.'
+        );
+      } else if (errorMessage.includes('Guest limit reached')) {
+        Alert.alert(
+          'Guest Limit Reached',
+          'You have used your one free recipe. Please sign up to generate unlimited recipes!',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'Sign Up', onPress: () => router.push('/(auth)/signup') }
+          ]
+        );
+      } else {
+        Alert.alert('Generation Failed', errorMessage);
+      }
     } finally {
       setGenerating(false);
     }
@@ -69,6 +106,18 @@ export default function HomeScreen() {
 
   const handleSaveRecipe = async () => {
     if (!generatedRecipe) return;
+
+    if (!user) {
+      Alert.alert(
+        'Login Required',
+        'Please sign up or login to save recipes to your cookbook.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Sign Up', onPress: () => router.push('/(auth)/signup') }
+        ]
+      );
+      return;
+    }
 
     try {
       await api.post('/recipes', {
