@@ -32,8 +32,16 @@ export default function CookbookScreen() {
     <LinearGradient colors={[theme.colors.background, theme.colors.backgroundLight]} style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
-          <Text style={styles.title}>My Cookbook</Text>
-          <Text style={styles.subtitle}>{recipes.length} saved recipes</Text>
+          <View>
+            <Text style={styles.title}>My Cookbook</Text>
+            <Text style={styles.subtitle}>{recipes.length} saved recipes</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.createButton}
+            onPress={() => router.push('/create-recipe')}
+          >
+            <MaterialCommunityIcons name="plus" size={24} color={theme.colors.text} />
+          </TouchableOpacity>
         </View>
 
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
@@ -84,9 +92,10 @@ export default function CookbookScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   safeArea: { flex: 1 },
-  header: { paddingHorizontal: theme.spacing.lg, paddingTop: theme.spacing.lg, paddingBottom: theme.spacing.md },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: theme.spacing.lg, paddingTop: theme.spacing.lg, paddingBottom: theme.spacing.md },
   title: { fontSize: theme.fontSize.xxxl, fontWeight: '700', color: theme.colors.text },
   subtitle: { fontSize: theme.fontSize.md, color: theme.colors.textSecondary, marginTop: theme.spacing.xs },
+  createButton: { width: 48, height: 48, borderRadius: 24, backgroundColor: theme.colors.primary, justifyContent: 'center', alignItems: 'center', ...theme.shadows.md },
   scrollView: { flex: 1 },
   scrollContent: { padding: theme.spacing.lg },
   loadingText: { color: theme.colors.textSecondary, textAlign: 'center', marginTop: theme.spacing.xl },
