@@ -5,9 +5,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
-import { theme } from '../../utils/theme';
-import api from '../../utils/api';
-import { useAuth } from '../../contexts/AuthContext';
+import { theme } from '../utils/theme';
+import api from '../utils/api';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function CreateRecipeScreen() {
   const router = useRouter();
