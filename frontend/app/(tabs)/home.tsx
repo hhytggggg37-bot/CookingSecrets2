@@ -144,10 +144,10 @@ export default function HomeScreen() {
               <Text style={styles.greeting}>Hello, {user?.name || 'Guest'}!</Text>
               <Text style={styles.subGreeting}>What would you like to cook today?</Text>
             </View>
-            <View style={styles.walletBadge}>
+            <TouchableOpacity style={styles.walletBadge} onPress={() => router.push('/wallet')}>
               <MaterialCommunityIcons name="wallet" size={20} color={theme.colors.primary} />
               <Text style={styles.walletText}>${user?.wallet_balance?.toFixed(2) || '0.00'}</Text>
-            </View>
+            </TouchableOpacity>
           </View>
 
           <TouchableOpacity style={styles.aiGeneratorCard} onPress={() => setShowGenerator(true)}>
