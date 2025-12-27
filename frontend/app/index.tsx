@@ -126,6 +126,20 @@ const styles = StyleSheet.create({
     width: '100%',
     gap: theme.spacing.md,
   },
+  guestButton: {
+    flexDirection: 'row',
+    backgroundColor: theme.colors.secondary,
+    paddingVertical: theme.spacing.md,
+    borderRadius: theme.borderRadius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...theme.shadows.md,
+  },
+  guestButtonText: {
+    color: theme.colors.text,
+    fontSize: theme.fontSize.md,
+    fontWeight: '600',
+  },
   primaryButton: {
     backgroundColor: theme.colors.primary,
     paddingVertical: theme.spacing.md,
