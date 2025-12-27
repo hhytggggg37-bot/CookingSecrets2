@@ -353,7 +353,10 @@ async def get_me(current_user: dict = Depends(get_current_user)):
 # ============================================================================
 
 @api_router.post("/recipes/generate")
-async def generate_recipe(data: RecipeGenerate, current_user: dict = Depends(get_current_user)):
+async def generate_recipe(
+    data: RecipeGenerate, 
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer(auto_error=False))
+):
     # Check OpenAI configuration
     if not openai_configured:
         raise HTTPException(
@@ -361,8 +364,25 @@ async def generate_recipe(data: RecipeGenerate, current_user: dict = Depends(get
             detail="AI service not configured. Please set OPENAI_API_KEY environment variable."
         )
     
+    # Determine if user is authenticated
+    current_user = None
+    is_guest = True
+    
+    if credentials:
+        try:
+            token = credentials.credentials
+            payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+            user_id = payload.get("sub")
+            if user_id:
+                user = await db.users.find_one({"_id": ObjectId(user_id)})
+                if user and not user.get("banned", False):
+                    current_user = user
+                    is_guest = False
+        except JWTError:
+            pass
+    
     # Guest user: check limit (1 recipe per session)
-    if current_user["role"] == UserRole.GUEST:
+    if is_guest:
         if not data.session_id:
             raise HTTPException(status_code=400, detail="Session ID required for guest users")
         
@@ -410,7 +430,7 @@ Do not include any markdown, explanations, or extra text. Only return the JSON."
             raise ValueError("Invalid recipe structure")
         
         # Update guest session count
-        if current_user["role"] == UserRole.GUEST:
+        if is_guest:
             await db.guest_sessions.update_one(
                 {"session_id": data.session_id},
                 {
@@ -423,7 +443,7 @@ Do not include any markdown, explanations, or extra text. Only return the JSON."
         return {
             "success": True,
             "recipe": recipe_data,
-            "requires_login": current_user["role"] == UserRole.GUEST
+            "requires_login": is_guest
         }
         
     except json.JSONDecodeError as e:
