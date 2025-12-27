@@ -188,7 +188,13 @@ export default function HomeScreen() {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Top Chefs</Text>
               {topChefs.map((chef: any, index) => (
-                <View key={index} style={styles.chefCard}>
+                <TouchableOpacity
+                  key={index}
+                  style={styles.chefCard}
+                  onPress={() => router.push('/marketplace')}
+                  // Navigates to marketplace - discovery leads to monetization
+                  // Future: can filter by creator_id once implemented
+                >
                   <View style={styles.chefIcon}>
                     <MaterialCommunityIcons name="chef-hat" size={24} color={theme.colors.primary} />
                   </View>
@@ -196,7 +202,7 @@ export default function HomeScreen() {
                     <Text style={styles.chefName}>{chef.name}</Text>
                     <Text style={styles.chefEarnings}>${chef.wallet_balance.toFixed(2)} earned</Text>
                   </View>
-                </View>
+                </TouchableOpacity>
               ))}
             </View>
           )}
