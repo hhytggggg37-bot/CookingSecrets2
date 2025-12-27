@@ -47,7 +47,11 @@ export default function CookbookScreen() {
             </View>
           ) : (
             recipes.map((recipe: any, index) => (
-              <TouchableOpacity key={recipe.id} style={styles.recipeCard}>
+              <TouchableOpacity
+                key={recipe.id}
+                style={styles.recipeCard}
+                onPress={() => router.push(`/recipe/${recipe.id}`)}
+              >
                 <View style={styles.recipeNumber}>
                   <Text style={styles.recipeNumberText}>{index + 1}</Text>
                 </View>

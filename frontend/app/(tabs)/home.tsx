@@ -168,13 +168,17 @@ export default function HomeScreen() {
               <Text style={styles.sectionTitle}>Trending Recipes</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {trendingRecipes.map((recipe: any, index) => (
-                  <View key={index} style={styles.recipeCard}>
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.recipeCard}
+                    onPress={() => router.push(`/recipe/${recipe._id || recipe.id}`)}
+                  >
                     <Text style={styles.recipeTitle}>{recipe.title}</Text>
                     <View style={styles.recipeStats}>
                       <MaterialCommunityIcons name="heart" size={16} color={theme.colors.error} />
                       <Text style={styles.recipeStatText}>{recipe.likes_count}</Text>
                     </View>
-                  </View>
+                  </TouchableOpacity>
                 ))}
               </ScrollView>
             </View>

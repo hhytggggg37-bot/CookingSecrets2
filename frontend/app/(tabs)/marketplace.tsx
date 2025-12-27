@@ -3,11 +3,13 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { theme } from '../../utils/theme';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 
 export default function MarketplaceScreen() {
+  const router = useRouter();
   const { user, refreshUser } = useAuth();
   const [paidRecipes, setPaidRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -58,7 +60,11 @@ export default function MarketplaceScreen() {
             </View>
           ) : (
             paidRecipes.map((recipe: any) => (
-              <View key={recipe.id} style={styles.recipeCard}>
+              <TouchableOpacity
+                key={recipe.id}
+                style={styles.recipeCard}
+                onPress={() => router.push(`/recipe/${recipe.id}`)}
+              >
                 <View style={styles.chefBadge}>
                   <MaterialCommunityIcons name="chef-hat" size={20} color={theme.colors.primary} />
                 </View>
@@ -76,12 +82,15 @@ export default function MarketplaceScreen() {
                   <Text style={styles.priceText}>${recipe.price.toFixed(2)}</Text>
                   <TouchableOpacity
                     style={styles.buyButton}
-                    onPress={() => handlePurchase(recipe.id, recipe.price)}
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      handlePurchase(recipe.id, recipe.price);
+                    }}
                   >
                     <Text style={styles.buyButtonText}>Buy</Text>
                   </TouchableOpacity>
                 </View>
-              </View>
+              </TouchableOpacity>
             ))
           )}
         </ScrollView>
