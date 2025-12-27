@@ -67,9 +67,15 @@ export default function ProfileScreen() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Account</Text>
             
-            <TouchableOpacity style={styles.menuItem}>
+            <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/notifications')}>
               <MaterialCommunityIcons name="bell" size={24} color={theme.colors.textSecondary} />
               <Text style={styles.menuText}>Notifications</Text>
+              <MaterialCommunityIcons name="chevron-right" size={24} color={theme.colors.textMuted} />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/wallet')}>
+              <MaterialCommunityIcons name="wallet" size={24} color={theme.colors.textSecondary} />
+              <Text style={styles.menuText}>Wallet</Text>
               <MaterialCommunityIcons name="chevron-right" size={24} color={theme.colors.textMuted} />
             </TouchableOpacity>
 
@@ -81,7 +87,7 @@ export default function ProfileScreen() {
               </TouchableOpacity>
             )}
 
-            <TouchableOpacity style={styles.menuItem}>
+            <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/settings')}>
               <MaterialCommunityIcons name="cog" size={24} color={theme.colors.textSecondary} />
               <Text style={styles.menuText}>Settings</Text>
               <MaterialCommunityIcons name="chevron-right" size={24} color={theme.colors.textMuted} />
