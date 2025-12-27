@@ -50,7 +50,11 @@ export default function ProfileScreen() {
 
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Wallet</Text>
-            <View style={styles.walletCard}>
+            <TouchableOpacity
+              style={styles.walletCard}
+              onPress={() => router.push('/wallet')}
+              // Wallet card navigates to full wallet screen for deposits/history
+            >
               <View style={styles.walletIcon}>
                 <MaterialCommunityIcons name="wallet" size={32} color={theme.colors.primary} />
               </View>
@@ -58,10 +62,13 @@ export default function ProfileScreen() {
                 <Text style={styles.walletLabel}>Balance</Text>
                 <Text style={styles.walletAmount}>${user?.wallet_balance?.toFixed(2) || '0.00'}</Text>
               </View>
-              <TouchableOpacity style={styles.addButton}>
+              <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => router.push('/wallet')}
+              >
                 <MaterialCommunityIcons name="plus" size={20} color={theme.colors.text} />
               </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.section}>
