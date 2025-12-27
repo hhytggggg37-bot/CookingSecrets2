@@ -1,0 +1,10 @@
+import { Stack } from 'expo-router';
+
+export default function StaffLayout() {
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="moderation" />
+      <Stack.Screen name="admin" />
+    </Stack>
+  );
+}
