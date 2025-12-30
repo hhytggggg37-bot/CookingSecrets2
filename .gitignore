@@ -83,3 +83,7 @@ android-sdk/ CookingSecrets.zip
 *.env
 *.env.*
 CookingSecrets.zip
+-e 
+# Environment files
+*.env
+*.env.*
