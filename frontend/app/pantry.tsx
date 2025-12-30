@@ -143,6 +143,7 @@ export default function PantryScreen() {
             try {
               await api.delete(`/pantry/${itemId}`);
               setItems(prev => prev.filter(item => item.id !== itemId));
+              Alert.alert('Success', 'Item deleted successfully');
             } catch (error: any) {
               Alert.alert('Error', error.response?.data?.detail || 'Failed to delete item');
             }
@@ -271,7 +272,10 @@ export default function PantryScreen() {
                         </TouchableOpacity>
                         
                         <Text style={styles.quantityText}>
-                          {item.quantity_type === 'number' ? Math.floor(item.quantity) : item.quantity.toFixed(2)}
+                          {item.quantity_type === 'kg' 
+                            ? `${item.quantity.toFixed(2)} kg`
+                            : `${Math.floor(item.quantity)}`
+                          }
                         </Text>
                         
                         <TouchableOpacity

@@ -15,6 +15,12 @@ export default function WalletScreen() {
   const [loading, setLoading] = useState(true);
   const [depositAmount, setDepositAmount] = useState('');
   const [depositing, setDepositing] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'upi'>('card');
+  const [cardNumber, setCardNumber] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
+  const [cvv, setCvv] = useState('');
+  const [upiId, setUpiId] = useState('');
 
   useEffect(() => {
     loadTransactions();
@@ -38,15 +44,47 @@ export default function WalletScreen() {
       return;
     }
 
+    setShowPaymentModal(true);
+  };
+
+  const processPayment = async () => {
+    const amount = parseFloat(depositAmount);
+
+    // Validate payment details
+    if (paymentMethod === 'card') {
+      if (cardNumber.length !== 16 || !/^\d+$/.test(cardNumber)) {
+        Alert.alert('Error', 'Card number must be exactly 16 digits');
+        return;
+      }
+      if (!expiryDate || !/^\d{2}\/\d{2}$/.test(expiryDate)) {
+        Alert.alert('Error', 'Enter valid expiry date (MM/YY)');
+        return;
+      }
+      if (cvv.length !== 3 || !/^\d+$/.test(cvv)) {
+        Alert.alert('Error', 'CVV must be 3 digits');
+        return;
+      }
+    } else {
+      if (!upiId || !upiId.includes('@')) {
+        Alert.alert('Error', 'Enter valid UPI ID (e.g., user@paytm)');
+        return;
+      }
+    }
+
     setDepositing(true);
     try {
       await api.post('/wallet/deposit', { amount });
       await refreshUser();
       setDepositAmount('');
+      setCardNumber('');
+      setExpiryDate('');
+      setCvv('');
+      setUpiId('');
+      setShowPaymentModal(false);
       loadTransactions();
-      Alert.alert('Success', 'Funds added to wallet');
+      Alert.alert('Success', 'Payment successful! Funds added to wallet');
     } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.detail || 'Deposit failed');
+      Alert.alert('Error', error.response?.data?.detail || 'Payment failed');
     } finally {
       setDepositing(false);
     }
@@ -157,4 +195,19 @@ const styles = StyleSheet.create({
   transactionDate: { fontSize: theme.fontSize.sm, color: theme.colors.textSecondary, marginTop: theme.spacing.xs },
   transactionAmount: { fontSize: theme.fontSize.lg, fontWeight: '700', color: theme.colors.success },
   negativeAmount: { color: theme.colors.error },
+  modalContainer: { flex: 1, backgroundColor: theme.colors.overlay, justifyContent: 'flex-end' },
+  modalContent: { backgroundColor: theme.colors.backgroundLight, borderTopLeftRadius: theme.borderRadius.xl, borderTopRightRadius: theme.borderRadius.xl, padding: theme.spacing.xl, maxHeight: '80%' },
+  modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: theme.spacing.lg },
+  modalTitle: { fontSize: theme.fontSize.xl, fontWeight: '700', color: theme.colors.text },
+  amountDisplay: { fontSize: theme.fontSize.xxl, fontWeight: '700', color: theme.colors.primary, textAlign: 'center', marginBottom: theme.spacing.lg },
+  paymentMethodSelector: { flexDirection: 'row', gap: theme.spacing.md, marginBottom: theme.spacing.lg },
+  methodButton: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: theme.spacing.sm, backgroundColor: theme.colors.glassLight, paddingVertical: theme.spacing.md, borderRadius: theme.borderRadius.md, borderWidth: 1, borderColor: 'rgba(255, 255, 255, 0.1)' },
+  methodButtonActive: { backgroundColor: theme.colors.primary, borderColor: theme.colors.primaryLight },
+  methodText: { fontSize: theme.fontSize.md, color: theme.colors.textMuted, fontWeight: '600' },
+  methodTextActive: { color: theme.colors.text },
+  paymentInput: { backgroundColor: theme.colors.glassLight, borderRadius: theme.borderRadius.md, padding: theme.spacing.md, color: theme.colors.text, fontSize: theme.fontSize.md, marginBottom: theme.spacing.md, borderWidth: 1, borderColor: 'rgba(255, 255, 255, 0.1)' },
+  row: { flexDirection: 'row', gap: theme.spacing.md },
+  halfInput: { flex: 1 },
+  payButton: { backgroundColor: theme.colors.primary, paddingVertical: theme.spacing.md, borderRadius: theme.borderRadius.md, alignItems: 'center', marginTop: theme.spacing.md },
+  payButtonText: { fontSize: theme.fontSize.lg, fontWeight: '600', color: theme.colors.text },
 });

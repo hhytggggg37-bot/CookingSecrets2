@@ -78,3 +78,8 @@ agenthub/agents/youtube/db
 
 # Mobile development
 android-sdk/ CookingSecrets.zip
+-e 
+# Environment files
+*.env
+*.env.*
+CookingSecrets.zip

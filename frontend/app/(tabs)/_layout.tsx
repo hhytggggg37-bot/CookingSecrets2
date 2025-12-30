@@ -37,6 +37,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="pantry"
+        options={{
+          title: 'Pantry',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="fridge" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="marketplace"
         options={{
           title: 'Marketplace',
