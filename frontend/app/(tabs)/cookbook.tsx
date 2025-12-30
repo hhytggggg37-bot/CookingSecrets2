@@ -59,6 +59,7 @@ export default function CookbookScreen() {
                 key={recipe.id}
                 style={styles.recipeCard}
                 onPress={() => router.push(`/recipe/${recipe.id}`)}
+                activeOpacity={0.8}
               >
                 <View style={styles.recipeNumber}>
                   <Text style={styles.recipeNumberText}>{index + 1}</Text>

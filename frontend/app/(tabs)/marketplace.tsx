@@ -115,6 +115,7 @@ export default function MarketplaceScreen() {
                 key={recipe.id}
                 style={styles.recipeCard}
                 onPress={() => router.push(`/recipe/${recipe.id}`)}
+                activeOpacity={0.8}
               >
                 <View style={styles.chefBadge}>
                   <MaterialCommunityIcons name="chef-hat" size={20} color={theme.colors.primary} />
@@ -137,6 +138,7 @@ export default function MarketplaceScreen() {
                       e.stopPropagation();
                       handlePurchase(recipe.id, recipe.price);
                     }}
+                    activeOpacity={0.7}
                   >
                     <Text style={styles.buyButtonText}>Buy</Text>
                   </TouchableOpacity>

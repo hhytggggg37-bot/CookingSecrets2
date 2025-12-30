@@ -727,18 +727,17 @@ async def get_wallet_balance(current_user: dict = Depends(get_current_user)):
     return {"balance": current_user.get("wallet_balance", 0.0)}
 
 @api_router.post("/wallet/deposit")
-async def deposit_to_wallet(amount: float, current_user: dict = Depends(get_current_user)):
+async def deposit_to_wallet(data: dict, current_user: dict = Depends(get_current_user)):
     if not stripe_configured:
         raise HTTPException(
             status_code=503,
             detail="Payment service not configured. Please set STRIPE keys in environment variables."
         )
     
+    amount = data.get("amount", 0)
+    
     if amount <= 0:
         raise HTTPException(status_code=400, detail="Amount must be positive")
-    
-    # In a real implementation, you would create a Stripe PaymentIntent here
-    # For sandbox mode, we'll simulate the payment
     
     # Update wallet
     await db.users.update_one(

@@ -81,9 +81,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = async () => {
-    await AsyncStorage.removeItem('token');
-    await AsyncStorage.removeItem('user');
-    setUser(null);
+    try {
+      // 1. Clear AsyncStorage completely
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('user');
+      await AsyncStorage.removeItem('guest_session_id');
+      
+      // 2. Clear axios default auth headers
+      if (api.defaults.headers.common) {
+        delete api.defaults.headers.common['Authorization'];
+      }
+      
+      // 3. Reset user state to null
+      setUser(null);
+      
+      console.log('Logout complete: All auth data cleared');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   const refreshUser = async () => {

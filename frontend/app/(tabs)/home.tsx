@@ -156,7 +156,11 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={styles.aiGeneratorCard} onPress={() => setShowGenerator(true)}>
+          <TouchableOpacity
+            style={styles.aiGeneratorCard}
+            onPress={() => setShowGenerator(true)}
+            activeOpacity={0.9}
+          >
             <LinearGradient
               colors={[theme.colors.primary, theme.colors.primaryDark]}
               style={styles.aiGradient}

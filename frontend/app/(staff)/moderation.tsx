@@ -51,6 +51,7 @@ export default function ModerationScreen() {
 
   const handleLogout = async () => {
     await logout();
+    // Reset navigation stack completely for staff logout
     router.replace('/');
   };
 

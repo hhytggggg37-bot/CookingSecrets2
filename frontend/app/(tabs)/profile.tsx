@@ -53,7 +53,6 @@ export default function ProfileScreen() {
             <TouchableOpacity
               style={styles.walletCard}
               onPress={() => router.push('/wallet')}
-              // Wallet card navigates to full wallet screen for deposits/history
             >
               <View style={styles.walletIcon}>
                 <MaterialCommunityIcons name="wallet" size={32} color={theme.colors.primary} />
@@ -74,6 +73,12 @@ export default function ProfileScreen() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Account</Text>
             
+            <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/pantry')}>
+              <MaterialCommunityIcons name="fridge" size={24} color={theme.colors.textSecondary} />
+              <Text style={styles.menuText}>Pantry</Text>
+              <MaterialCommunityIcons name="chevron-right" size={24} color={theme.colors.textMuted} />
+            </TouchableOpacity>
+
             <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/notifications')}>
               <MaterialCommunityIcons name="bell" size={24} color={theme.colors.textSecondary} />
               <Text style={styles.menuText}>Notifications</Text>
@@ -90,8 +95,6 @@ export default function ProfileScreen() {
               <TouchableOpacity
                 style={styles.menuItem}
                 onPress={() => router.push('/(tabs)/cookbook')}
-                // Chefs can view their creations in cookbook
-                // Future: can add filter for "created by me" vs "saved"
               >
                 <MaterialCommunityIcons name="chef-hat" size={24} color={theme.colors.textSecondary} />
                 <Text style={styles.menuText}>My Recipes</Text>

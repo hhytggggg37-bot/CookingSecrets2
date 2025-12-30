@@ -84,7 +84,9 @@ export default function AdminScreen() {
           </View>
           <TouchableOpacity style={styles.logoutButton} onPress={async () => {
             await logout();
+            // Reset navigation stack for admin logout
             router.replace('/');
+          }}>
           }}>
             <MaterialCommunityIcons name="logout" size={24} color={theme.colors.text} />
           </TouchableOpacity>
