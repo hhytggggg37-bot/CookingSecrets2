@@ -34,8 +34,8 @@ export default function ModerationScreen() {
       await api.post(`/moderation/reports/${reportId}/ignore`);
       Alert.alert('Success', 'Report ignored');
       loadReports();
-    } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.detail || error.message);
+    } catch (error) {
+      Alert.alert('Error', error?.response?.data?.detail || error.message);
     }
   };
 
@@ -44,8 +44,8 @@ export default function ModerationScreen() {
       await api.post(`/moderation/reports/${reportId}/escalate`);
       Alert.alert('Success', 'Report escalated to admin');
       loadReports();
-    } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.detail || error.message);
+    } catch (error) {
+      Alert.alert('Error', error?.response?.data?.detail || error.message);
     }
   };
 
