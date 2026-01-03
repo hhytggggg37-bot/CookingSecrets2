@@ -384,7 +384,8 @@ async def generate_recipe(
         )
     
     # Determine if user is authenticated
-    current_user = None
+    # Determine if user is authenticated
+    # (Used only to decide guest limits; not otherwise used in this endpoint)
     is_guest = True
     
     if credentials:
