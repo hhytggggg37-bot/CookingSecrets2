@@ -140,7 +140,7 @@ export default function AdminScreen() {
 
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Escalated Reports ({escalatedReports.length})</Text>
-            {escalatedReports.map((report: any) => (
+            {escalatedReports.map((report) => (
               <View key={report.id} style={styles.reportCard}>
                 <Text style={styles.reportReason}>{report.reason}</Text>
                 <Text style={styles.commentText}>{report.comment_content}</Text>
