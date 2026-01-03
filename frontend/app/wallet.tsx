@@ -46,47 +46,24 @@ export default function WalletScreen() {
       return;
     }
 
+    // Open fake Razorpay flow
     setShowPaymentModal(true);
   };
 
   const processPayment = async () => {
     const amount = parseFloat(depositAmount);
-
-    // Validate payment details
-    if (paymentMethod === 'card') {
-      if (cardNumber.length !== 16 || !/^\d+$/.test(cardNumber)) {
-        Alert.alert('Error', 'Card number must be exactly 16 digits');
-        return;
-      }
-      if (!expiryDate || !/^\d{2}\/\d{2}$/.test(expiryDate)) {
-        Alert.alert('Error', 'Enter valid expiry date (MM/YY)');
-        return;
-      }
-      if (cvv.length !== 3 || !/^\d+$/.test(cvv)) {
-        Alert.alert('Error', 'CVV must be 3 digits');
-        return;
-      }
-    } else {
-      if (!upiId || !upiId.includes('@')) {
-        Alert.alert('Error', 'Enter valid UPI ID (e.g., user@paytm)');
-        return;
-      }
-    }
+    if (!amount || amount <= 0) return;
 
     setDepositing(true);
     try {
       await api.post('/wallet/deposit', { amount });
       await refreshUser();
       setDepositAmount('');
-      setCardNumber('');
-      setExpiryDate('');
-      setCvv('');
-      setUpiId('');
       setShowPaymentModal(false);
-      loadTransactions();
+      await loadTransactions();
       Alert.alert('Success', 'Payment successful! Funds added to wallet');
-    } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.detail || 'Payment failed');
+    } catch (error) {
+      Alert.alert('Error', error?.response?.data?.detail || 'Payment failed');
     } finally {
       setDepositing(false);
     }
