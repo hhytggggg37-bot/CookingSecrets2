@@ -166,6 +166,20 @@ export default function AdminScreen() {
                   onChangeText={setModEmail}
                   keyboardType="email-address"
                   autoCapitalize="none"
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Password"
+                  placeholderTextColor={theme.colors.textMuted}
+                  value={modPassword}
+                  onChangeText={setModPassword}
+                  secureTextEntry
+                />
+                <TouchableOpacity style={styles.createButton} onPress={handleCreateModerator}>
+                  <Text style={styles.createButtonText}>Create Moderator</Text>
+                </TouchableOpacity>
+              </View>
+            )}
 
             {showCreateAdmin && (
               <View style={styles.createForm}>
@@ -195,21 +209,6 @@ export default function AdminScreen() {
                 />
                 <TouchableOpacity style={styles.createButton} onPress={handleCreateAdmin}>
                   <Text style={styles.createButtonText}>Create Admin</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Password"
-                  placeholderTextColor={theme.colors.textMuted}
-                  value={modPassword}
-                  onChangeText={setModPassword}
-                  secureTextEntry
-                />
-                <TouchableOpacity style={styles.createButton} onPress={handleCreateModerator}>
-                  <Text style={styles.createButtonText}>Create Moderator</Text>
                 </TouchableOpacity>
               </View>
             )}
