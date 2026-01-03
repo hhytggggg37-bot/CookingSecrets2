@@ -395,7 +395,9 @@ async def generate_recipe(
             if user_id:
                 user = await db.users.find_one({"_id": ObjectId(user_id)})
                 if user and not user.get("banned", False):
-                    current_user = user
+                    # Keeping this assignment for potential future personalization
+                    # and to avoid re-querying. Not used further in this handler.
+                    _current_user = user
                     is_guest = False
         except JWTError:
             pass
