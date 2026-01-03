@@ -39,7 +39,7 @@ export default function ModerationScreen() {
     }
   };
 
-  const handleEscalate = async (reportId: string) => {
+  const handleEscalate = async (reportId) => {
     try {
       await api.post(`/moderation/reports/${reportId}/escalate`);
       Alert.alert('Success', 'Report escalated to admin');
