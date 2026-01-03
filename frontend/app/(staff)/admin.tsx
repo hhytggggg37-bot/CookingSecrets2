@@ -18,6 +18,11 @@ export default function AdminScreen() {
   const [modEmail, setModEmail] = useState('');
   const [modPassword, setModPassword] = useState('');
   const [modName, setModName] = useState('');
+  const [showCreateAdmin, setShowCreateAdmin] = useState(false);
+  const [adminEmail, setAdminEmail] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
+  const [adminName, setAdminName] = useState('');
+
 
   useEffect(() => {
     loadAdminData();
