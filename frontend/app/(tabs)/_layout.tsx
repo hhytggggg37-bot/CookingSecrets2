@@ -1,8 +1,16 @@
-import { Tabs } from 'expo-router';
+import React from 'react';
+import { Tabs, Redirect } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { theme } from '../../utils/theme';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function TabLayout() {
+  const { user, loading } = useAuth();
+
+  // Auth guard: prevents back-navigation into protected tab screens after logout.
+  if (loading) return null;
+  if (!user) return <Redirect href="/" />;
+
   return (
     <Tabs
       screenOptions={{
