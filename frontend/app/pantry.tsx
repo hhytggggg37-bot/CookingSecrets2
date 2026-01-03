@@ -8,7 +8,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { theme } from '../utils/theme';
 import api from '../utils/api';
 
-const PantryItemType = {};
+// Pantry item shape returned by backend (kept JS-only for web build compatibility)
 
 export default function PantryScreen() {
   const router = useRouter();
