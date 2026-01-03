@@ -46,35 +46,35 @@ export default function TabLayout() {
         name="home"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color, size }) => <HomeIcon color={color} size={size} />,
+          tabBarIcon: HomeIcon,
         }}
       />
       <Tabs.Screen
         name="cookbook"
         options={{
           title: 'Cookbook',
-          tabBarIcon: ({ color, size }) => <CookbookIcon color={color} size={size} />,
+          tabBarIcon: CookbookIcon,
         }}
       />
       <Tabs.Screen
         name="pantry"
         options={{
           title: 'Pantry',
-          tabBarIcon: ({ color, size }) => <PantryIcon color={color} size={size} />,
+          tabBarIcon: PantryIcon,
         }}
       />
       <Tabs.Screen
         name="marketplace"
         options={{
           title: 'Marketplace',
-          tabBarIcon: ({ color, size }) => <MarketplaceIcon color={color} size={size} />,
+          tabBarIcon: MarketplaceIcon,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color, size }) => <ProfileIcon color={color} size={size} />,
+          tabBarIcon: ProfileIcon,
         }}
       />
     </Tabs>
