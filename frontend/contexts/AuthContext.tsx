@@ -82,22 +82,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = async () => {
     try {
-      // 1. Clear AsyncStorage completely
-      await AsyncStorage.removeItem('token');
-      await AsyncStorage.removeItem('user');
-      await AsyncStorage.removeItem('guest_session_id');
-      
-      // 2. Clear axios default auth headers
-      if (api.defaults.headers.common) {
-        delete api.defaults.headers.common['Authorization'];
+      // Clear persisted auth + any session-like data
+      await AsyncStorage.multiRemove(['token', 'user', 'guest_session_id']);
+
+      // Also clear any in-memory default header (request interceptor reads AsyncStorage,
+      // but this protects against any accidental default header usage).
+      if (api.defaults.headers?.common) {
+        delete api.defaults.headers.common.Authorization;
       }
-      
-      // 3. Reset user state to null
+
+      // Reset state LAST (ensures layouts/Redirects react immediately)
       setUser(null);
-      
-      console.log('Logout complete: All auth data cleared');
+      console.log('Logout complete');
     } catch (error) {
       console.error('Logout error:', error);
+      // Still force local state reset as a fail-safe
+      setUser(null);
     }
   };
 
