@@ -4,7 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { theme } from '../../utils/theme';
 import { useAuth } from '../../contexts/AuthContext';
 
-const HomeIcon = ({ color, size }: any) => (
+const HomeIcon = ({ color, size }) => (
   <MaterialCommunityIcons name="home" size={size} color={color} />
 );
 const CookbookIcon = ({ color, size }: any) => (
