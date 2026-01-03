@@ -106,15 +106,18 @@ user_problem_statement: "Stabilize CookingSecrets core flows. Current focus: fak
 backend:
   - task: "Wallet deposit endpoint should not require Stripe keys (fake Razorpay UI)"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Removed Stripe-gate from /api/wallet/deposit; endpoint now simply credits wallet and records deposit transaction (frontend uses fake Razorpay UI)."
+      - working: true
+        agent: "main"
+        comment: "Manual backend test: signup/login -> GET /wallet/balance=0.0 -> POST /wallet/deposit {amount:12.5} -> GET /wallet/balance=12.5 -> /wallet/transactions includes deposit." 
 frontend:
   - task: "Fake Razorpay payment modal for wallet top-up"
     implemented: true
