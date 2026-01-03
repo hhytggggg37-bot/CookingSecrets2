@@ -1012,7 +1012,7 @@ async def create_staff_account(data: AdminCreateStaff, current_user: dict = Depe
     return {"success": True, "staff_id": str(result.inserted_id)}
 
 @api_router.post("/moderation/ban-user")
-async def moderation_ban_user(data: UserBan, current_user: dict = Depends(get_current_staff)):
+async def moderation_ban_user(data: ModerateBanUser, current_user: dict = Depends(get_current_staff)):
     # Moderators/Admins can ban/unban any non-admin users.
     if not ObjectId.is_valid(data.user_id):
         raise HTTPException(status_code=400, detail="Invalid user ID")
