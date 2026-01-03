@@ -90,7 +90,7 @@ export default function ModerationScreen() {
               <Text style={styles.emptySubtext}>All clear!</Text>
             </View>
           ) : (
-            reports.map((report: any) => (
+            reports.map((report) => (
               <View key={report.id} style={styles.reportCard}>
                 <View style={styles.reportHeader}>
                   <MaterialCommunityIcons name="flag" size={20} color={theme.colors.warning} />
