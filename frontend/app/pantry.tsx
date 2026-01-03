@@ -267,8 +267,8 @@ export default function PantryScreen() {
                         
                         <Text style={styles.quantityText}>
                           {item.quantity_type === 'kg'
-                            ? `${item.quantity}${item.quantity_type}`
-                            : `${Math.floor(item.quantity)}${item.quantity_type === 'number' ? '' : item.quantity_type}`
+                            ? `${item.quantity}kg`
+                            : `${Math.floor(item.quantity)}`
                           }
                         </Text>
                         
