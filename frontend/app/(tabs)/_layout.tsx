@@ -53,36 +53,28 @@ export default function TabLayout() {
         name="cookbook"
         options={{
           title: 'Cookbook',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="book-open-variant" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <CookbookIcon color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="pantry"
         options={{
           title: 'Pantry',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="fridge" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <PantryIcon color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="marketplace"
         options={{
           title: 'Marketplace',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="storefront" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <MarketplaceIcon color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="account" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <ProfileIcon color={color} size={size} />,
         }}
       />
     </Tabs>
