@@ -18,7 +18,7 @@ export default function WalletScreen() {
   const [depositAmount, setDepositAmount] = useState('');
   const [depositing, setDepositing] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'upi'>('card');
+  const [paymentMethod, setPaymentMethod] = useState('card');
   const [cardNumber, setCardNumber] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [cvv, setCvv] = useState('');
