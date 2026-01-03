@@ -164,6 +164,17 @@ const styles = StyleSheet.create({
   currencySymbol: { fontSize: theme.fontSize.xl, fontWeight: '700', color: theme.colors.text, marginRight: theme.spacing.sm },
   input: { flex: 1, paddingVertical: theme.spacing.md, color: theme.colors.text, fontSize: theme.fontSize.xl, fontWeight: '600' },
   depositButton: { backgroundColor: theme.colors.primary, paddingVertical: theme.spacing.md, borderRadius: theme.borderRadius.md, alignItems: 'center' },
+
+        <FakeRazorpayModal
+          visible={showPaymentModal}
+          amount={depositAmount}
+          onCancel={() => setShowPaymentModal(false)}
+          onPay={async () => {
+            // successful payment (fake)
+            await processPayment();
+          }}
+        />
+
   depositButtonText: { fontSize: theme.fontSize.lg, fontWeight: '600', color: theme.colors.text },
   sectionTitle: { fontSize: theme.fontSize.lg, fontWeight: '700', color: theme.colors.text, marginBottom: theme.spacing.md },
   loader: { marginTop: theme.spacing.xl },
