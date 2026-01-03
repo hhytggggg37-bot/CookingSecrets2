@@ -55,6 +55,35 @@ export default function ModerationScreen() {
     }
   };
 
+  const handleBanToggle = async () => {
+    if (!banUserId) {
+      Alert.alert('Error', 'Enter a user id');
+      return;
+    }
+    try {
+      await api.post('/moderation/ban-user', { user_id: banUserId, banned: banState === 'ban' });
+      Alert.alert('Success', banState === 'ban' ? 'User banned' : 'User unbanned');
+      setBanUserId('');
+    } catch (error) {
+      Alert.alert('Error', error?.response?.data?.detail || error.message);
+    }
+  };
+
+  const handleDeleteRecipe = async () => {
+    if (!deleteRecipeId) {
+      Alert.alert('Error', 'Enter a recipe id');
+      return;
+    }
+    try {
+      await api.post('/moderation/delete-recipe', { recipe_id: deleteRecipeId });
+      Alert.alert('Success', 'Recipe deleted');
+      setDeleteRecipeId('');
+    } catch (error) {
+      Alert.alert('Error', error?.response?.data?.detail || error.message);
+    }
+  };
+
+
   const handleLogout = async () => {
     await logout();
     // Reset navigation stack completely for staff logout
