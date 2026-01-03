@@ -978,6 +978,68 @@ async def ban_user(data: UserBan, current_user: dict = Depends(get_current_admin
 @api_router.get("/admin/users", response_model=List[UserResponse])
 async def get_all_users(current_user: dict = Depends(get_current_admin)):
     users = await db.users.find({}).sort("created_at", -1).to_list(1000)
+
+@api_router.post("/admin/create-staff")
+async def create_staff_account(data: AdminCreateStaff, current_user: dict = Depends(get_current_admin)):
+    # Validate role
+    if data.role not in [UserRole.ADMIN, UserRole.MODERATOR]:
+        raise HTTPException(status_code=400, detail="Role must be 'admin' or 'moderator'")
+
+    existing = await db.users.find_one({"email": data.email})
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    staff = {
+        "email": data.email,
+        "password": hash_password(data.password),
+        "name": data.name,
+        "role": data.role,
+        "wallet_balance": 0.0,
+        "banned": False,
+        "created_at": datetime.utcnow()
+    }
+
+    result = await db.users.insert_one(staff)
+    return {"success": True, "staff_id": str(result.inserted_id)}
+
+@api_router.post("/moderation/ban-user")
+async def moderation_ban_user(data: UserBan, current_user: dict = Depends(get_current_staff)):
+    # Moderators/Admins can ban/unban any non-admin users.
+    if not ObjectId.is_valid(data.user_id):
+        raise HTTPException(status_code=400, detail="Invalid user ID")
+
+    target = await db.users.find_one({"_id": ObjectId(data.user_id)})
+    if not target:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if target.get("role") == UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Cannot ban an admin")
+
+    await db.users.update_one(
+        {"_id": ObjectId(data.user_id)},
+        {"$set": {"banned": data.banned}}
+    )
+
+    return {"success": True}
+
+@api_router.post("/moderation/delete-recipe")
+async def moderation_delete_recipe(recipe_id: str, current_user: dict = Depends(get_current_staff)):
+    if not ObjectId.is_valid(recipe_id):
+        raise HTTPException(status_code=400, detail="Invalid recipe ID")
+
+    recipe = await db.recipes.find_one({"_id": ObjectId(recipe_id)})
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+
+    await db.recipes.delete_one({"_id": ObjectId(recipe_id)})
+
+    # Optional: clean related entities
+    await db.comments.delete_many({"recipe_id": recipe_id})
+    await db.likes.delete_many({"recipe_id": recipe_id})
+    await db.cookbook.delete_many({"recipe_id": recipe_id})
+
+    return {"success": True}
+
     return [user_to_response(u) for u in users]
 
 @api_router.get("/admin/reports/escalated", response_model=List[ReportResponse])
