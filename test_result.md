@@ -179,11 +179,11 @@ frontend:
     file: "/app/frontend/app/(staff)/admin.tsx"
     priority: "high"
     needs_retesting: true
-  - task: "Moderation screen no TS parse errors (staff usable)"
+  - task: "Moderation screen quick actions: ban/unban user + delete recipe"
     implemented: true
     working: "NA"
     file: "/app/frontend/app/(staff)/moderation.tsx"
-    priority: "medium"
+    priority: "high"
     needs_retesting: true
 
   test_all: false
