@@ -4,6 +4,22 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { theme } from '../../utils/theme';
 import { useAuth } from '../../contexts/AuthContext';
 
+const HomeIcon = ({ color, size }: { color: string; size: number }) => (
+  <MaterialCommunityIcons name="home" size={size} color={color} />
+);
+const CookbookIcon = ({ color, size }: { color: string; size: number }) => (
+  <MaterialCommunityIcons name="book-open-variant" size={size} color={color} />
+);
+const PantryIcon = ({ color, size }: { color: string; size: number }) => (
+  <MaterialCommunityIcons name="fridge" size={size} color={color} />
+);
+const MarketplaceIcon = ({ color, size }: { color: string; size: number }) => (
+  <MaterialCommunityIcons name="storefront" size={size} color={color} />
+);
+const ProfileIcon = ({ color, size }: { color: string; size: number }) => (
+  <MaterialCommunityIcons name="account" size={size} color={color} />
+);
+
 export default function TabLayout() {
   const { user, loading } = useAuth();
 
