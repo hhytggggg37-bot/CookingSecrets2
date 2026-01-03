@@ -94,8 +94,8 @@ export default function PantryScreen() {
       setNewItemQuantity('0');
       setShowAddForm(false);
       loadItems();
-    } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.detail || 'Failed to add item');
+    } catch (error) {
+      Alert.alert('Error', error?.response?.data?.detail || 'Failed to add item');
     } finally {
       setSaving(false);
     }
@@ -119,8 +119,8 @@ export default function PantryScreen() {
       setItems(prev => prev.map(item => 
         item.id === itemId ? { ...item, quantity: newQuantity } : item
       ));
-    } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.detail || 'Failed to update quantity');
+    } catch (error) {
+      Alert.alert('Error', error?.response?.data?.detail || 'Failed to update quantity');
     }
   };
 
