@@ -38,12 +38,12 @@ export default function AdminScreen() {
     }
   };
 
-  const handleBanUser = async (userId: string, currentlyBanned: boolean) => {
+  const handleBanUser = async (userId, currentlyBanned) => {
     try {
       await api.post('/admin/ban-user', { user_id: userId, banned: !currentlyBanned });
       Alert.alert('Success', currentlyBanned ? 'User unbanned' : 'User banned');
       loadAdminData();
-    } catch (error: any) {
+    } catch (error) {
       Alert.alert('Error', error.response?.data?.detail || error.message);
     }
   };
@@ -66,7 +66,7 @@ export default function AdminScreen() {
       setModPassword('');
       setModName('');
       loadAdminData();
-    } catch (error: any) {
+    } catch (error) {
       Alert.alert('Error', error.response?.data?.detail || error.message);
     }
   };
