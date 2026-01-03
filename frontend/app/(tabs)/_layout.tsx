@@ -4,19 +4,19 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { theme } from '../../utils/theme';
 import { useAuth } from '../../contexts/AuthContext';
 
-const HomeIcon = ({ color, size }: { color: string; size: number }) => (
+const HomeIcon = ({ color, size }: any) => (
   <MaterialCommunityIcons name="home" size={size} color={color} />
 );
-const CookbookIcon = ({ color, size }: { color: string; size: number }) => (
+const CookbookIcon = ({ color, size }: any) => (
   <MaterialCommunityIcons name="book-open-variant" size={size} color={color} />
 );
-const PantryIcon = ({ color, size }: { color: string; size: number }) => (
+const PantryIcon = ({ color, size }: any) => (
   <MaterialCommunityIcons name="fridge" size={size} color={color} />
 );
-const MarketplaceIcon = ({ color, size }: { color: string; size: number }) => (
+const MarketplaceIcon = ({ color, size }: any) => (
   <MaterialCommunityIcons name="storefront" size={size} color={color} />
 );
-const ProfileIcon = ({ color, size }: { color: string; size: number }) => (
+const ProfileIcon = ({ color, size }: any) => (
   <MaterialCommunityIcons name="account" size={size} color={color} />
 );
 
