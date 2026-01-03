@@ -399,6 +399,8 @@ async def generate_recipe(
                     is_guest = False
         except JWTError:
             pass
+
+    # NOTE: 'current_user' is only used for auth detection. If present, generation is not treated as guest.
     
     # Guest user: check limit (1 recipe per session)
     if is_guest:
