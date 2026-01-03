@@ -101,7 +101,7 @@ export default function PantryScreen() {
     }
   };
 
-  const handleUpdateQuantity = async (itemId: string, currentQuantity: number, quantityType: string, delta: number) => {
+  const handleUpdateQuantity = async (itemId, currentQuantity, quantityType, delta) => {
     if (quantityType === 'none') return;
 
     let newQuantity = currentQuantity + delta;
@@ -124,7 +124,7 @@ export default function PantryScreen() {
     }
   };
 
-  const handleDeleteItem = async (itemId: string) => {
+  const handleDeleteItem = async (itemId) => {
     Alert.alert(
       'Delete Item',
       'Are you sure you want to delete this item?',
@@ -138,7 +138,7 @@ export default function PantryScreen() {
               await api.delete(`/pantry/${itemId}`);
               setItems(prev => prev.filter(item => item.id !== itemId));
               Alert.alert('Success', 'Item deleted successfully');
-            } catch (error: any) {
+            } catch (error) {
               Alert.alert('Error', error.response?.data?.detail || 'Failed to delete item');
             }
           },
