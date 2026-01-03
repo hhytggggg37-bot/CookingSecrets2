@@ -150,7 +150,7 @@ export default function AdminScreen() {
 
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>All Users ({users.length})</Text>
-            {users.map((u: any) => (
+            {users.map((u) => (
               <View key={u.id} style={styles.userCard}>
                 <View style={styles.userIcon}>
                   <MaterialCommunityIcons
