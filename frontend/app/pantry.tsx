@@ -8,13 +8,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { theme } from '../utils/theme';
 import api from '../utils/api';
 
-type PantryItem = {
-  id: string;
-  name?: string;
-  image?: string;
-  quantity_type: 'kg' | 'number' | 'none';
-  quantity: number;
-};
+const PantryItemType = {};
 
 export default function PantryScreen() {
   const router = useRouter();
