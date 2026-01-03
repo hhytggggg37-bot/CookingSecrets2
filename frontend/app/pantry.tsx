@@ -12,7 +12,7 @@ import api from '../utils/api';
 
 export default function PantryScreen() {
   const router = useRouter();
-  const [items, setItems] = useState<PantryItem[]>([]);
+  const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newItemName, setNewItemName] = useState('');
