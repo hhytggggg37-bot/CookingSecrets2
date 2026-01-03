@@ -7,6 +7,8 @@ import { useRouter } from 'expo-router';
 import { theme } from '../utils/theme';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
+import FakeRazorpayModal from '../components/FakeRazorpayModal';
+
 
 export default function WalletScreen() {
   const router = useRouter();
