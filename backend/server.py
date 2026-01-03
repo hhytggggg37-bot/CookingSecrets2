@@ -978,6 +978,7 @@ async def ban_user(data: UserBan, current_user: dict = Depends(get_current_admin
 @api_router.get("/admin/users", response_model=List[UserResponse])
 async def get_all_users(current_user: dict = Depends(get_current_admin)):
     users = await db.users.find({}).sort("created_at", -1).to_list(1000)
+    return [user_to_response(u) for u in users]
 
 @api_router.post("/admin/create-staff")
 async def create_staff_account(data: AdminCreateStaff, current_user: dict = Depends(get_current_admin)):
