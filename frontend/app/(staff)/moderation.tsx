@@ -14,6 +14,12 @@ export default function ModerationScreen() {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
 
+
+  // Quick actions for moderators/admins
+  const [banUserId, setBanUserId] = useState('');
+  const [banState, setBanState] = useState('ban'); // 'ban' | 'unban'
+  const [deleteRecipeId, setDeleteRecipeId] = useState('');
+
   useEffect(() => {
     loadReports();
   }, []);
