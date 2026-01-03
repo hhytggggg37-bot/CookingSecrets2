@@ -29,7 +29,7 @@ export default function ModerationScreen() {
     }
   };
 
-  const handleIgnore = async (reportId: string) => {
+  const handleIgnore = async (reportId) => {
     try {
       await api.post(`/moderation/reports/${reportId}/ignore`);
       Alert.alert('Success', 'Report ignored');
