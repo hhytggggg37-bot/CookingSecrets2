@@ -133,7 +133,7 @@ frontend:
   - task: "Logout guard prevents back navigation into tabs"
     implemented: true
     working: "NA"
-    file: "/app/frontend/app/(tabs)/_layout.tsx"
+    file: "/app/frontend/app/_layout.tsx"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
@@ -141,6 +141,9 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Added auth guard Redirect in tabs and staff layouts to prevent access after logout/back."
+      - working: "NA"
+        agent: "main"
+        comment: "Added root Stack keying by auth state to force full navigation reset on login/logout. Refactored AuthContext to JS-only and hardened logout via AsyncStorage.multiRemove." 
   - task: "Pantry in bottom tabs only"
     implemented: true
     working: "NA"
