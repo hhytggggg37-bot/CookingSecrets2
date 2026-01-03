@@ -728,23 +728,23 @@ async def get_wallet_balance(current_user: dict = Depends(get_current_user)):
 
 @api_router.post("/wallet/deposit")
 async def deposit_to_wallet(data: dict, current_user: dict = Depends(get_current_user)):
-    if not stripe_configured:
-        raise HTTPException(
-            status_code=503,
-            detail="Payment service not configured. Please set STRIPE keys in environment variables."
-        )
-    
-    amount = data.get("amount", 0)
-    
+    """Deposit into wallet.
+
+    NOTE: Frontend uses a FAKE Razorpay UI in test mode.
+    This endpoint simply credits the user's wallet and records a transaction.
+    """
+
+    amount = float(data.get("amount", 0) or 0)
+
     if amount <= 0:
         raise HTTPException(status_code=400, detail="Amount must be positive")
-    
+
     # Update wallet
     await db.users.update_one(
         {"_id": current_user["_id"]},
         {"$inc": {"wallet_balance": amount}}
     )
-    
+
     # Record transaction
     await db.transactions.insert_one({
         "user_id": str(current_user["_id"]),
@@ -752,7 +752,7 @@ async def deposit_to_wallet(data: dict, current_user: dict = Depends(get_current
         "type": "deposit",
         "created_at": datetime.utcnow()
     })
-    
+
     return {"success": True, "new_balance": current_user.get("wallet_balance", 0.0) + amount}
 
 @api_router.post("/wallet/purchase/{recipe_id}")
