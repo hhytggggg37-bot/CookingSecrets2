@@ -79,6 +79,54 @@ export default function ModerationScreen() {
       Alert.alert('Success', 'Recipe deleted');
       setDeleteRecipeId('');
     } catch (error) {
+
+        <View style={styles.quickActionsCard}>
+          <Text style={styles.quickActionsTitle}>Quick Actions</Text>
+
+          <Text style={styles.quickLabel}>Ban / Unban user (by user id)</Text>
+          <View style={styles.row}>
+            <TouchableOpacity
+              style={[styles.pill, banState === 'ban' && styles.pillActive]}
+              onPress={() => setBanState('ban')}
+            >
+              <Text style={[styles.pillText, banState === 'ban' && styles.pillTextActive]}>Ban</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.pill, banState === 'unban' && styles.pillActive]}
+              onPress={() => setBanState('unban')}
+            >
+              <Text style={[styles.pillText, banState === 'unban' && styles.pillTextActive]}>Unban</Text>
+            </TouchableOpacity>
+          </View>
+
+          <TextInput
+            style={styles.quickInput}
+            placeholder="User ID (Mongo _id)"
+            placeholderTextColor={theme.colors.textMuted}
+            value={banUserId}
+            onChangeText={setBanUserId}
+            autoCapitalize="none"
+          />
+          <TouchableOpacity style={styles.quickBtn} onPress={handleBanToggle}>
+            <Text style={styles.quickBtnText}>Apply</Text>
+          </TouchableOpacity>
+
+          <View style={styles.divider} />
+
+          <Text style={styles.quickLabel}>Delete recipe (by recipe id)</Text>
+          <TextInput
+            style={styles.quickInput}
+            placeholder="Recipe ID"
+            placeholderTextColor={theme.colors.textMuted}
+            value={deleteRecipeId}
+            onChangeText={setDeleteRecipeId}
+            autoCapitalize="none"
+          />
+          <TouchableOpacity style={[styles.quickBtn, { backgroundColor: theme.colors.error }]} onPress={handleDeleteRecipe}>
+            <Text style={styles.quickBtnText}>Delete Recipe</Text>
+          </TouchableOpacity>
+        </View>
+
       Alert.alert('Error', error?.response?.data?.detail || error.message);
     }
   };
