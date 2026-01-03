@@ -2,31 +2,12 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../utils/api';
 
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
-  wallet_balance: number;
-  profile_image?: string;
-  bio?: string;
-  followers_count: number;
-  following_count: number;
-  banned: boolean;
-}
+// Auth state is intentionally JS-only (no TS types) to keep Expo web build + ESLint stable.
+// User shape comes from backend `/api/auth/*` and `/api/auth/me`.
 
-interface AuthContextType {
-  user: User | null;
-  loading: boolean;
-  login: (email: string, password: string, isStaff?: boolean) => Promise<void>;
-  signup: (email: string, password: string, name: string, role: string) => Promise<void>;
-  logout: () => Promise<void>;
-  refreshUser: () => Promise<void>;
-}
+const AuthContext = createContext(undefined);
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -49,7 +30,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const login = async (email: string, password: string, isStaff = false) => {
+  const login = async (email, password, isStaff = false) => {
     try {
       const endpoint = isStaff ? '/auth/staff-login' : '/auth/login';
       const response = await api.post(endpoint, { email, password });
@@ -60,12 +41,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await AsyncStorage.setItem('user', JSON.stringify(userData));
       
       setUser(userData);
-    } catch (error: any) {
-      throw new Error(error.response?.data?.detail || 'Login failed');
+    } catch (error) {
+      throw new Error(error?.response?.data?.detail || 'Login failed');
     }
   };
 
-  const signup = async (email: string, password: string, name: string, role: string) => {
+  const signup = async (email, password, name, role) => {
     try {
       const response = await api.post('/auth/signup', { email, password, name, role });
       
@@ -75,8 +56,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await AsyncStorage.setItem('user', JSON.stringify(userData));
       
       setUser(userData);
-    } catch (error: any) {
-      throw new Error(error.response?.data?.detail || 'Signup failed');
+    } catch (error) {
+      throw new Error(error?.response?.data?.detail || 'Signup failed');
     }
   };
 
