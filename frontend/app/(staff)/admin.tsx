@@ -71,6 +71,31 @@ export default function AdminScreen() {
       setModPassword('');
       setModName('');
       loadAdminData();
+
+  const handleCreateAdmin = async () => {
+    if (!adminEmail || !adminPassword || !adminName) {
+      Alert.alert('Error', 'Please fill all fields');
+      return;
+    }
+
+    try {
+      await api.post('/admin/create-staff', {
+        email: adminEmail,
+        password: adminPassword,
+        name: adminName,
+        role: 'admin',
+      });
+      Alert.alert('Success', 'Admin created successfully');
+      setShowCreateAdmin(false);
+      setAdminEmail('');
+      setAdminPassword('');
+      setAdminName('');
+      loadAdminData();
+    } catch (error) {
+      Alert.alert('Error', error.response?.data?.detail || error.message);
+    }
+  };
+
     } catch (error) {
       Alert.alert('Error', error.response?.data?.detail || error.message);
     }
