@@ -231,6 +231,13 @@ class UserBan(BaseModel):
     user_id: str
     banned: bool
 
+
+class AdminCreateStaff(BaseModel):
+    email: EmailStr
+    password: str
+    name: str
+    role: str  # 'admin' or 'moderator'
+
 # ============================================================================
 # HELPER FUNCTIONS
 # ============================================================================
