@@ -101,3 +101,65 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Stabilize CookingSecrets core flows. Current focus: fake Razorpay wallet deposit flow plus regression on logout and pantry."
+backend:
+  - task: "Wallet deposit endpoint should not require Stripe keys (fake Razorpay UI)"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Removed Stripe-gate from /api/wallet/deposit; endpoint now simply credits wallet and records deposit transaction (frontend uses fake Razorpay UI)."
+frontend:
+  - task: "Fake Razorpay payment modal for wallet top-up"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/wallet.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented FakeRazorpayModal with 16-digit validation; wallet top-up opens modal and on success calls /api/wallet/deposit then refreshes balance."
+  - task: "Logout guard prevents back navigation into tabs"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/(tabs)/_layout.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added auth guard Redirect in tabs and staff layouts to prevent access after logout/back."
+  - task: "Pantry in bottom tabs only"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/(tabs)/pantry.tsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created (tabs)/pantry route (re-export). Removed pantry link from profile to keep pantry accessible via tab bar." 
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: false
+test_plan:
+  current_focus:
+    - "Wallet deposit endpoint should not require Stripe keys (fake Razorpay UI)"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+agent_communication:
+  - agent: "main"
+    message: "Please test backend wallet deposit flow end-to-end: signup/login, call /api/wallet/balance, deposit positive amount, verify balance increased + transaction recorded. Stripe keys are not required anymore."
