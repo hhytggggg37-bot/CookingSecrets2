@@ -7,16 +7,16 @@ import { useAuth } from '../../contexts/AuthContext';
 const HomeIcon = ({ color, size }) => (
   <MaterialCommunityIcons name="home" size={size} color={color} />
 );
-const CookbookIcon = ({ color, size }: any) => (
+const CookbookIcon = ({ color, size }) => (
   <MaterialCommunityIcons name="book-open-variant" size={size} color={color} />
 );
-const PantryIcon = ({ color, size }: any) => (
+const PantryIcon = ({ color, size }) => (
   <MaterialCommunityIcons name="fridge" size={size} color={color} />
 );
-const MarketplaceIcon = ({ color, size }: any) => (
+const MarketplaceIcon = ({ color, size }) => (
   <MaterialCommunityIcons name="storefront" size={size} color={color} />
 );
-const ProfileIcon = ({ color, size }: any) => (
+const ProfileIcon = ({ color, size }) => (
   <MaterialCommunityIcons name="account" size={size} color={color} />
 );
 
