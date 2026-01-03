@@ -16,8 +16,8 @@ export default function PantryScreen() {
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newItemName, setNewItemName] = useState('');
-  const [newItemImage, setNewItemImage] = useState<string | null>(null);
-  const [newItemQuantityType, setNewItemQuantityType] = useState<'kg' | 'number' | 'none'>('kg');
+  const [newItemImage, setNewItemImage] = useState(null);
+  const [newItemQuantityType, setNewItemQuantityType] = useState('kg');
   const [newItemQuantity, setNewItemQuantity] = useState('0');
   const [saving, setSaving] = useState(false);
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
