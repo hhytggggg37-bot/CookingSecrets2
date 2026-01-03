@@ -1032,7 +1032,9 @@ async def moderation_ban_user(data: ModerateBanUser, current_user: dict = Depend
     return {"success": True}
 
 @api_router.post("/moderation/delete-recipe")
-async def moderation_delete_recipe(recipe_id: str, current_user: dict = Depends(get_current_staff)):
+async def moderation_delete_recipe(data: ModerateDeleteRecipe, current_user: dict = Depends(get_current_staff)):
+    recipe_id = data.recipe_id
+
     if not ObjectId.is_valid(recipe_id):
         raise HTTPException(status_code=400, detail="Invalid recipe ID")
 
