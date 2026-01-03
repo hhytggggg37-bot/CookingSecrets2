@@ -272,9 +272,9 @@ export default function PantryScreen() {
                         </TouchableOpacity>
                         
                         <Text style={styles.quantityText}>
-                          {item.quantity_type === 'kg' 
-                            ? `${item.quantity.toFixed(2)} kg`
-                            : `${Math.floor(item.quantity)}`
+                          {item.quantity_type === 'kg'
+                            ? `${item.quantity}${item.quantity_type}`
+                            : `${Math.floor(item.quantity)}${item.quantity_type === 'number' ? '' : item.quantity_type}`
                           }
                         </Text>
                         
