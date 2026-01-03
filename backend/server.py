@@ -1041,8 +1041,6 @@ async def moderation_delete_recipe(recipe_id: str, current_user: dict = Depends(
 
     return {"success": True}
 
-    return [user_to_response(u) for u in users]
-
 @api_router.get("/admin/reports/escalated", response_model=List[ReportResponse])
 async def get_escalated_reports(current_user: dict = Depends(get_current_admin)):
     reports = await db.reports.find({"status": "escalated"}).sort("created_at", -1).to_list(100)
