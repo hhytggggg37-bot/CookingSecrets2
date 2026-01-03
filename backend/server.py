@@ -467,7 +467,7 @@ Do not include any markdown, explanations, or extra text. Only return the JSON."
             "requires_login": is_guest
         }
         
-    except json.JSONDecodeError as e:
+    except json.JSONDecodeError:
         logger.error(f"Failed to parse OpenAI response: {recipe_text}")
         raise HTTPException(status_code=500, detail="Failed to parse AI response")
     except Exception as e:
