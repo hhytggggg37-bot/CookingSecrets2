@@ -146,6 +146,21 @@ export default function WalletScreen() {
   );
 }
 
+        
+      </SafeAreaView>
+
+      <FakeRazorpayModal
+        visible={showPaymentModal}
+        amount={depositAmount}
+        onCancel={() => setShowPaymentModal(false)}
+        onPay={async () => {
+          await processPayment();
+        }}
+      />
+    </LinearGradient>
+  );
+}
+
 const styles = StyleSheet.create({
   container: { flex: 1 },
   safeArea: { flex: 1 },
