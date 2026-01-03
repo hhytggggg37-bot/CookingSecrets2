@@ -166,6 +166,39 @@ export default function AdminScreen() {
                   onChangeText={setModEmail}
                   keyboardType="email-address"
                   autoCapitalize="none"
+
+            {showCreateAdmin && (
+              <View style={styles.createForm}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Name"
+                  placeholderTextColor={theme.colors.textMuted}
+                  value={adminName}
+                  onChangeText={setAdminName}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Email"
+                  placeholderTextColor={theme.colors.textMuted}
+                  value={adminEmail}
+                  onChangeText={setAdminEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Password"
+                  placeholderTextColor={theme.colors.textMuted}
+                  value={adminPassword}
+                  onChangeText={setAdminPassword}
+                  secureTextEntry
+                />
+                <TouchableOpacity style={styles.createButton} onPress={handleCreateAdmin}>
+                  <Text style={styles.createButtonText}>Create Admin</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
                 />
                 <TextInput
                   style={styles.input}
