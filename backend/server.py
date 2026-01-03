@@ -163,6 +163,14 @@ class CommentResponse(BaseModel):
     reported: bool
     created_at: datetime
 
+
+class ModerateBanUser(BaseModel):
+    user_id: str
+    banned: bool
+
+class ModerateDeleteRecipe(BaseModel):
+    recipe_id: str
+
 # Notification Models
 class NotificationResponse(BaseModel):
     id: str
