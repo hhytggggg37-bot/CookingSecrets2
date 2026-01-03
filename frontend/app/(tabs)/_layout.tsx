@@ -46,9 +46,7 @@ export default function TabLayout() {
         name="home"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="home" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <HomeIcon color={color} size={size} />,
         }}
       />
       <Tabs.Screen
