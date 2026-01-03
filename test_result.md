@@ -164,6 +164,28 @@ test_plan:
   current_focus:
     - "Wallet deposit endpoint should not require Stripe keys (fake Razorpay UI)"
   stuck_tasks: []
+
+backend:
+  - task: "Admin can create staff accounts (admin/moderator) via /api/admin/create-staff"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    priority: "high"
+    needs_retesting: true
+frontend:
+  - task: "Admin panel UI supports creating Admin + Moderator"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/(staff)/admin.tsx"
+    priority: "high"
+    needs_retesting: true
+  - task: "Moderation screen no TS parse errors (staff usable)"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/(staff)/moderation.tsx"
+    priority: "medium"
+    needs_retesting: true
+
   test_all: false
   test_priority: "high_first"
 agent_communication:
