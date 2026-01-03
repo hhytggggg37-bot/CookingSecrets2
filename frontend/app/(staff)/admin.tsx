@@ -126,13 +126,27 @@ export default function AdminScreen() {
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Moderators</Text>
-              <TouchableOpacity
-                style={styles.addButton}
-                onPress={() => setShowCreateModerator(!showCreateModerator)}
-              >
-                <MaterialCommunityIcons name="plus" size={20} color={theme.colors.text} />
-              </TouchableOpacity>
+              <Text style={styles.sectionTitle}>Staff Accounts</Text>
+              <View style={{ flexDirection: 'row', gap: theme.spacing.sm }}>
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={() => {
+                    setShowCreateModerator(!showCreateModerator);
+                    if (!showCreateModerator) setShowCreateAdmin(false);
+                  }}
+                >
+                  <MaterialCommunityIcons name="shield" size={18} color={theme.colors.text} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={() => {
+                    setShowCreateAdmin(!showCreateAdmin);
+                    if (!showCreateAdmin) setShowCreateModerator(false);
+                  }}
+                >
+                  <MaterialCommunityIcons name="shield-crown" size={18} color={theme.colors.text} />
+                </TouchableOpacity>
+              </View>
             </View>
 
             {showCreateModerator && (
