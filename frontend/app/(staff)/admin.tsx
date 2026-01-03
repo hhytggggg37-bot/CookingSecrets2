@@ -71,6 +71,10 @@ export default function AdminScreen() {
       setModPassword('');
       setModName('');
       loadAdminData();
+    } catch (error) {
+      Alert.alert('Error', error.response?.data?.detail || error.message);
+    }
+  };
 
   const handleCreateAdmin = async () => {
     if (!adminEmail || !adminPassword || !adminName) {
@@ -91,11 +95,6 @@ export default function AdminScreen() {
       setAdminPassword('');
       setAdminName('');
       loadAdminData();
-    } catch (error) {
-      Alert.alert('Error', error.response?.data?.detail || error.message);
-    }
-  };
-
     } catch (error) {
       Alert.alert('Error', error.response?.data?.detail || error.message);
     }
